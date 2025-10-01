@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+## Workspaces
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Super>1']"
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-2 "['<Super>2']"
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-3 "['<Super>3']"
@@ -21,3 +23,10 @@ gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-8 "['<Super><Sh
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-9 "['<Super><Shift>9']"
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-10 "['<Super><Shift>0']"
 gsettings set org.gnome.desktop.wm.preferences focus-new-windows 'smart'
+
+## windows
+gsettings set org.gnome.desktop.wm.keybindings maximize "['<Alt>F11']"
+
+
+## apps
+
