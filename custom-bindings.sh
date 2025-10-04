@@ -28,8 +28,17 @@ unbind_existing() {
 }
 
 # Register paths
-paths=$(printf "'$BASE/%s/' " "${!keybindings[@]}")
+# Build comma-separated array of paths for gsettings
+paths=""
+for i in "${!keybindings[@]}"; do
+    paths+="'$BASE/$i/', "
+done
+# Remove trailing comma+space
+paths="${paths%, }"
+
+# Set the custom-keybindings array
 gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "[$paths]"
+
 
 # Apply each binding
 for i in "${!keybindings[@]}"; do
