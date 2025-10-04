@@ -21,27 +21,29 @@ unbind_existing() {
         "org.gnome.mutter"
     )
 
-    echo "Checking for conflicts with '$binding'..."
+    echo "=== Checking for conflicts with '$binding' ==="
 
     for schema in "${schemas[@]}"; do
+        echo "Schema: $schema"
         keys=$(gsettings list-keys "$schema")
+        echo "Keys in schema: $keys"
         for key in $keys; do
-            # Only process array-typed keys
             type=$(gsettings range "$schema" "$key" 2>/dev/null)
+            echo "  Checking key: $key (type: $type)"
             if [[ $type == *"array"* ]]; then
                 current=$(gsettings get "$schema" "$key")
-                # Remove leading/trailing brackets
+                echo "    Current value: $current"
                 arr="${current#[}"
                 arr="${arr%]}"
-                # Split by comma
                 IFS=',' read -ra vals <<< "$arr"
                 new_vals=()
                 changed=false
                 for val in "${vals[@]}"; do
                     val_trimmed=$(echo "$val" | xargs)  # remove whitespace
                     val_trimmed=${val_trimmed//\'/}      # remove single quotes
+                    echo "      Checking array element: '$val_trimmed'"
                     if [[ "$val_trimmed" == "$binding" ]]; then
-                        echo "Unbinding '$binding' from $schema:$key (was $current)"
+                        echo "      FOUND conflict! Unbinding '$binding' from $schema:$key"
                         changed=true
                         continue
                     fi
@@ -49,12 +51,15 @@ unbind_existing() {
                 done
                 if $changed; then
                     new_value="[${new_vals[*]}]"
+                    echo "    Setting new value for $schema:$key -> $new_value"
                     gsettings set "$schema" "$key" "$new_value"
                 fi
             fi
         done
     done
+    echo "=== Finished checking '$binding' ==="
 }
+
 
 
 
