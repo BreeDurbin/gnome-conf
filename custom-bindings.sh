@@ -24,34 +24,38 @@ unbind_existing() {
     echo "Checking for conflicts with '$binding'..."
 
     for schema in "${schemas[@]}"; do
-        # Get all keys in the schema
         keys=$(gsettings list-keys "$schema")
         for key in $keys; do
-            # Only process keys that are arrays (typical for keybindings)
+            # Only process array-typed keys
             type=$(gsettings range "$schema" "$key" 2>/dev/null)
             if [[ $type == *"array"* ]]; then
                 current=$(gsettings get "$schema" "$key")
-                # Check if the binding exists in this key
-                if [[ $current == *"$binding"* ]]; then
-                    echo "Unbinding '$binding' from $schema:$key (was $current)"
-                    # Remove only the conflicting binding
-                    # Convert array string to bash array
-                    IFS=',' read -ra arr <<< "${current//[\[\]]/}"
-                    new_arr=()
-                    for val in "${arr[@]}"; do
-                        val_trimmed=$(echo "$val" | xargs) # trim spaces
-                        if [[ "$val_trimmed" != "'$binding'" ]]; then
-                            new_arr+=("$val_trimmed")
-                        fi
-                    done
-                    # Join back into a gsettings array string
-                    new_value="[${new_arr[*]}]"
+                # Remove leading/trailing brackets
+                arr="${current#[}"
+                arr="${arr%]}"
+                # Split by comma
+                IFS=',' read -ra vals <<< "$arr"
+                new_vals=()
+                changed=false
+                for val in "${vals[@]}"; do
+                    val_trimmed=$(echo "$val" | xargs)  # remove whitespace
+                    val_trimmed=${val_trimmed//\'/}      # remove single quotes
+                    if [[ "$val_trimmed" == "$binding" ]]; then
+                        echo "Unbinding '$binding' from $schema:$key (was $current)"
+                        changed=true
+                        continue
+                    fi
+                    new_vals+=("'$val_trimmed'")
+                done
+                if $changed; then
+                    new_value="[${new_vals[*]}]"
                     gsettings set "$schema" "$key" "$new_value"
                 fi
             fi
         done
     done
 }
+
 
 
 # Register paths
