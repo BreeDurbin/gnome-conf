@@ -73,9 +73,8 @@ for i in "${!keybindings[@]}"; do
         key=${field%%=*}
         value=${field#*=}
         if [[ "$key" == "binding" ]]; then
-            # Remove quotes before passing to unbind_existing
-            clean_value=${value#\'}
-            clean_value=${clean_value%\'}
+            # Remove all single quotes from the value
+            clean_value=${value//\'/}
             echo "Processing new binding: $clean_value"
             unbind_existing "$clean_value"
         fi
