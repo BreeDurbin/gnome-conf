@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # GNOME custom keybindings installer
-# Updated: unbind conflicting shortcuts and echo actions
+# Fully revised: safe unbinding + debug output + proper array formatting
 
 BASE=/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings
 
@@ -12,7 +12,7 @@ keybindings["custom2"]="name='ChatGPT',command='xdg-open https://www.chatgpt.com
 keybindings["custom3"]="name='Youtube',command='xdg-open https://www.youtube.com',binding='<Super>y'"
 keybindings["custom4"]="name='Google',command='xdg-open https://www.google.com',binding='<Super>b'"
 
-# Function to unbind existing keybindings with the same key
+# Function to unbind conflicting shortcuts across schemas
 unbind_existing() {
     local binding="$1"
     local schemas=(
@@ -24,26 +24,24 @@ unbind_existing() {
     echo "=== Checking for conflicts with '$binding' ==="
 
     for schema in "${schemas[@]}"; do
-        echo "Schema: $schema"
         keys=$(gsettings list-keys "$schema")
-        echo "Keys in schema: $keys"
         for key in $keys; do
+            # Only process array-typed keys
             type=$(gsettings range "$schema" "$key" 2>/dev/null)
-            echo "  Checking key: $key (type: $type)"
             if [[ $type == *"array"* ]]; then
                 current=$(gsettings get "$schema" "$key")
-                echo "    Current value: $current"
                 arr="${current#[}"
                 arr="${arr%]}"
                 IFS=',' read -ra vals <<< "$arr"
                 new_vals=()
                 changed=false
                 for val in "${vals[@]}"; do
-                    val_trimmed=$(echo "$val" | xargs)  # remove whitespace
+                    val_trimmed=$(echo "$val" | xargs)   # trim spaces
                     val_trimmed=${val_trimmed//\'/}      # remove single quotes
-                    echo "      Checking array element: '$val_trimmed'"
+                    # Debug: print what we are checking
+                    # echo "Checking: '$val_trimmed' against '$binding'"
                     if [[ "$val_trimmed" == "$binding" ]]; then
-                        echo "      FOUND conflict! Unbinding '$binding' from $schema:$key"
+                        echo "Unbinding '$binding' from $schema:$key (was $current)"
                         changed=true
                         continue
                     fi
@@ -51,7 +49,6 @@ unbind_existing() {
                 done
                 if $changed; then
                     new_value="[${new_vals[*]}]"
-                    echo "    Setting new value for $schema:$key -> $new_value"
                     gsettings set "$schema" "$key" "$new_value"
                 fi
             fi
@@ -60,36 +57,31 @@ unbind_existing() {
     echo "=== Finished checking '$binding' ==="
 }
 
-
-
-
-# Register paths
-# Build comma-separated array of paths for gsettings
+# Build comma-separated array of custom keybinding paths
 paths=""
 for i in "${!keybindings[@]}"; do
     paths+="'$BASE/$i/', "
 done
-# Remove trailing comma+space
 paths="${paths%, }"
-
-# Set the custom-keybindings array
 gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "[$paths]"
 
-
-# Apply each binding
+# Apply each keybinding
 for i in "${!keybindings[@]}"; do
     IFS=',' read -ra fields <<< "${keybindings[$i]}"
-    # Extract binding first to unbind
+    # Extract binding and unbind conflicts first
     for field in "${fields[@]}"; do
         key=${field%%=*}
         value=${field#*=}
         if [[ "$key" == "binding" ]]; then
-            echo "Processing new binding: $value"
-            unbind_existing "$value"
+            # Remove quotes before passing to unbind_existing
+            clean_value=${value#\'}
+            clean_value=${clean_value%\'}
+            echo "Processing new binding: $clean_value"
+            unbind_existing "$clean_value"
         fi
     done
 
-    # Apply each property
+    # Apply each property of the keybinding
     for field in "${fields[@]}"; do
         key=${field%%=*}
         value=${field#*=}
@@ -99,3 +91,4 @@ for i in "${!keybindings[@]}"; do
 done
 
 echo "Custom GNOME keybindings applied successfully!"
+
