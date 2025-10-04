@@ -39,7 +39,7 @@ unbind_existing() {
                     val_trimmed=$(echo "$val" | xargs)   # trim spaces
                     val_trimmed=${val_trimmed//\'/}      # remove single quotes
                     # Debug: print what we are checking
-                    # echo "Checking: '$val_trimmed' against '$binding'"
+                    echo "Checking: '$val_trimmed' against '$binding'"
                     if [[ "$val_trimmed" == "$binding" ]]; then
                         echo "Unbinding '$binding' from $schema:$key (was $current)"
                         changed=true
