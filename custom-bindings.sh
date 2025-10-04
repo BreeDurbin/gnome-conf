@@ -21,7 +21,7 @@ unbind_existing() {
         "org.gnome.mutter"
     )
 
-    echo "=== Checking for conflicts with '$binding' ==="
+    echo "=== Checking for conflicts with $binding ==="
 
     for schema in "${schemas[@]}"; do
         keys=$(gsettings list-keys "$schema")
@@ -54,7 +54,7 @@ unbind_existing() {
             fi
         done
     done
-    echo "=== Finished checking '$binding' ==="
+    echo "=== Finished checking $binding ==="
 }
 
 # Build comma-separated array of custom keybinding paths
