@@ -4,6 +4,10 @@
 
 BASE=/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings
 
+SITES["ChatGPT"]="https://www.chatgpt.com"
+SITES["Youtube"]="https://www.youtube.com"
+SITES["Google"]="https://www.google.com"
+
 # Define keybindings
 declare -A keybindings
 keybindings["custom0"]="name=Code,command=code,binding=<Super>c"
@@ -23,10 +27,22 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "[
 # Apply each keybinding
 for i in "${!keybindings[@]}"; do
     IFS=',' read -ra fields <<< "${keybindings[$i]}"
-    # Apply each property of the keybinding
+    
+    # Check if this is a Firefox command with a profile
     for field in "${fields[@]}"; do
         key=${field%%=*}
         value=${field#*=}
+
+        # Detect Firefox --no-remote -P "ProfileName"
+        if [[ "$value" =~ firefox.*--no-remote.*-P[[:space:]]*\"([^\"]+)\" ]]; then
+            PROFILE_NAME="${BASH_REMATCH[1]}"
+            # Check if profile exists
+            if ! firefox --list-profiles | grep -q "^$PROFILE_NAME "; then
+                echo "Creating Firefox profile '$PROFILE_NAME'..."
+                firefox --CreateProfile "$PROFILE_NAME"
+            fi
+        fi
+
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:"$BASE/$i/" "$key" "$value"
         echo "Set $key = $value for custom$i"
     done
