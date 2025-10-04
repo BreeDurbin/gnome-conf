@@ -12,7 +12,7 @@ keybindings["custom1"]="name=Unreal Editor,command=UnrealEditor,binding=<Super>u
 keybindings["custom2"]="name=ChatGPT,command=firefox --no-remote -P "ChatGPT" https://www.chatgpt.com,binding=<Super>a"
 keybindings["custom3"]="name=Youtube,command=firefox --no-remote -P "Youtube"  https://www.youtube.com,binding=<Super>y"
 keybindings["custom4"]="name=Google,command=firefox --no-remote -P "Google"  https://www.google.com,binding=<Super>b"
-keybindings["custom5"]="name=Terminal,command=gnome-terminal,binding=<Super>enter"
+keybindings["custom5"]="name=Terminal,command=gnome-terminal,binding=<Super>Return"
 
 # Build comma-separated array of custom keybinding paths
 paths=""
