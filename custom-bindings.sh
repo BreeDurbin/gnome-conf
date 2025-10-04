@@ -14,6 +14,7 @@ keybindings["custom3"]="name=Youtube,command=firefox --no-remote -P "Youtube"  h
 keybindings["custom4"]="name=Google,command=firefox --no-remote -P "Google"  https://www.google.com,binding=<Super>b"
 keybindings["custom5"]="name=Terminal,command=gnome-terminal,binding=<Super>Return"
 keybindings["custom6"]="name=Email,command=firefox --no-remote -P "Email"  https://www.proton.me,binding=<Super>e"
+keybindings["custom7"]="name=Discord,command=legcord,binding=<Super>d"
 
 # Build comma-separated array of custom keybinding paths
 paths=""
