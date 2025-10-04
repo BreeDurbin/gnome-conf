@@ -8,9 +8,9 @@ BASE=/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings
 declare -A keybindings
 keybindings["custom0"]="name=Code,command=code,binding=<Super>c"
 keybindings["custom1"]="name=Unreal Editor,command=UnrealEditor,binding=<Super>u"
-keybindings["custom2"]="name=ChatGPT,command=firefox --new-instance  https://www.chatgpt.com,binding=<Super>a"
-keybindings["custom3"]="name=Youtube,command=firefox --new-instance  https://www.youtube.com,binding=<Super>y"
-keybindings["custom4"]="name=Google,command=firefox --new-instance  https://www.google.com,binding=<Super>b"
+keybindings["custom2"]="name=ChatGPT,command=firefox --no-remote -P "ChatGPT" https://www.chatgpt.com,binding=<Super>a"
+keybindings["custom3"]="name=Youtube,command=firefox --no-remote -P "Youtube"  https://www.youtube.com,binding=<Super>y"
+keybindings["custom4"]="name=Google,command=firefox --no-remote -P "Google"  https://www.google.com,binding=<Super>b"
 
 # Build comma-separated array of custom keybinding paths
 paths=""
