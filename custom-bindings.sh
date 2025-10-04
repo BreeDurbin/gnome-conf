@@ -6,11 +6,11 @@ BASE=/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings
 
 # Define keybindings
 declare -A keybindings
-keybindings["custom0"]="name='Code',command='code',binding='<Super>c'"
-keybindings["custom1"]="name='Unreal Editor',command='UnrealEditor',binding='<Super>u'"
-keybindings["custom2"]="name='ChatGPT',command='xdg-open https://www.chatgpt.com',binding='<Super>a'"
-keybindings["custom3"]="name='Youtube',command='xdg-open https://www.youtube.com',binding='<Super>y'"
-keybindings["custom4"]="name='Google',command='xdg-open https://www.google.com',binding='<Super>b'"
+keybindings["custom0"]="name=Code,command=code,binding=<Super>c"
+keybindings["custom1"]="name=Unreal Editor,command=UnrealEditor,binding=<Super>u"
+keybindings["custom2"]="name=ChatGPT,command=xdg-open https://www.chatgpt.com,binding=<Super>a"
+keybindings["custom3"]="name=Youtube,command=xdg-open https://www.youtube.com,binding=<Super>y"
+keybindings["custom4"]="name=Google,command=xdg-open https://www.google.com,binding=<Super>b"
 
 # Function to unbind conflicting shortcuts across schemas
 unbind_existing() {
