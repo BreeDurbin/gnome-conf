@@ -1,0 +1,40 @@
+appConfig:
+  theme: cherry-blossom
+  language: en
+  layout: auto
+  iconSize: medium
+pageInfo:
+  title: Dashy
+sections:
+  - name: Silverkeep
+    displayData:
+      sortBy: default
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: false
+    items:
+      - title: SIlverkeep Git
+        icon: favicon
+        url: https://github.com/BreeDurbin/Project-Silverkeep
+        id: 0_1050_silverkeepgit
+      - title: Silverkeep Kanban
+        icon: favicon
+        url: https://tree.taiga.io/project/breedurbin-project-silverkeep/kanban
+        id: 1_1050_silverkeepkanban
+  - name: Media
+    displayData:
+      sortBy: default
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: false
+    items:
+      - title: Youtube
+        icon: favicon
+        url: https://www.youtube.com
+        id: 0_480_youtube
+      - title: Rumble
+        icon: favicon
+        url: https://www.rumble.com
+        id: 1_480_rumble
